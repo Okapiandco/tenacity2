@@ -22,11 +22,11 @@ export function ImageUploadField({ label, value, onChange }: Props) {
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      if (!res.ok) throw new Error("Upload failed");
-      const data = await res.json() as { url: string };
-      onChange(data.url);
-    } catch {
-      setError("Upload failed. Please try again.");
+      const data = await res.json() as { url?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      onChange(data.url!);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed. Please try again.");
     } finally {
       setUploading(false);
     }

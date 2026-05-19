@@ -9,7 +9,11 @@ const MAX_SIZE_MB = 10;
 
 export async function POST(request: NextRequest) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "Unauthorised — please log in" }, { status: 401 });
+
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return NextResponse.json({ error: "BLOB_READ_WRITE_TOKEN not configured" }, { status: 500 });
+  }
 
   const formData = await request.formData();
   const file = formData.get("file") as File | null;
@@ -18,7 +22,11 @@ export async function POST(request: NextRequest) {
   if (!ALLOWED_TYPES.includes(file.type)) return NextResponse.json({ error: "Image files only" }, { status: 400 });
   if (file.size > MAX_SIZE_MB * 1024 * 1024) return NextResponse.json({ error: `Max ${MAX_SIZE_MB}MB` }, { status: 400 });
 
-  const blob = await put(file.name, file, { access: "public", addRandomSuffix: true });
-
-  return NextResponse.json({ url: blob.url });
+  try {
+    const blob = await put(file.name, file, { access: "public", addRandomSuffix: true });
+    return NextResponse.json({ url: blob.url });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ error: `Upload error: ${message}` }, { status: 500 });
+  }
 }
