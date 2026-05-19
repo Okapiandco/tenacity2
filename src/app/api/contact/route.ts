@@ -2,7 +2,6 @@ import { type NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
 import { contactSchema } from "@/lib/contact-schema";
-import { client } from "@/sanity/lib/client";
 
 export const runtime = "nodejs";
 
@@ -41,11 +40,8 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-async function resolveRecipient(): Promise<string> {
-  const fromSanity = await client
-    .fetch<string | null>(`*[_id == "contactPage"][0].recipientEmail`)
-    .catch(() => null);
-  return fromSanity || process.env.CONTACT_TO_EMAIL || "";
+function resolveRecipient(): string {
+  return process.env.CONTACT_TO_EMAIL ?? "";
 }
 
 function clientIp(request: NextRequest): string {
@@ -91,7 +87,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  const recipient = await resolveRecipient();
+  const recipient = resolveRecipient();
   if (!recipient) {
     console.error("Contact form: no recipient configured");
     return NextResponse.json(

@@ -3,21 +3,15 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
-import type { PortableTextBlock } from "next-sanity";
 import { ArrowRight } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { PT } from "@/components/ui/PT";
 import { Section } from "@/components/ui/Section";
-import {
-  SanityImage,
-  type SanityImageWithAlt,
-} from "@/components/ui/SanityImage";
 
 type AboutTeaserProps = {
-  shortBio?: PortableTextBlock[] | null;
-  image?: SanityImageWithAlt | null;
+  shortBio?: string | null;
+  image?: string | null;
 };
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -30,7 +24,10 @@ export function AboutTeaser({ shortBio, image }: AboutTeaserProps) {
   });
   const y = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
 
-  if (!shortBio || shortBio.length === 0) return null;
+  if (!shortBio) return null;
+
+  const paragraphs = shortBio.split(/\n{2,}/).filter(Boolean);
+
   return (
     <Section tone="brand" padding="lg" className="relative overflow-hidden">
       <div aria-hidden="true" className="pointer-events-none absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full bg-white/5 blur-3xl" />
@@ -67,9 +64,11 @@ export function AboutTeaser({ shortBio, image }: AboutTeaserProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.8, ease, delay: 0.2 }}
-              className="mt-8 space-y-5 text-base leading-relaxed text-white/80 sm:text-lg text-pretty [&_p]:text-white/80 [&_strong]:text-white"
+              className="mt-8 space-y-5 text-base leading-relaxed text-white/80 sm:text-lg text-pretty"
             >
-              <PT value={shortBio.slice(0, 2)} />
+              {paragraphs.slice(0, 2).map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
             </motion.div>
 
             <motion.div
@@ -104,22 +103,13 @@ export function AboutTeaser({ shortBio, image }: AboutTeaserProps) {
               style={{ y }}
               className="relative aspect-[4/5] overflow-hidden rounded-lg shadow-[0_30px_80px_-40px_rgba(17,24,39,0.4)]"
             >
-              {image ? (
-                <SanityImage
-                  image={image}
-                  fill
-                  sizes="(min-width: 768px) 40vw, 100vw"
-                  className="object-cover"
-                />
-              ) : (
-                <Image
-                  src="/IMG_4338.JPG"
-                  alt="Becky Phillips, founder of Tenacity Business Growth Consultancy"
-                  fill
-                  sizes="(min-width: 768px) 40vw, 100vw"
-                  className="object-cover"
-                />
-              )}
+              <Image
+                src={image ?? "/IMG_4338.JPG"}
+                alt="Becky Phillips, founder of Tenacity Business Growth Consultancy"
+                fill
+                sizes="(min-width: 768px) 40vw, 100vw"
+                className="object-cover"
+              />
             </motion.div>
           </motion.div>
         </div>

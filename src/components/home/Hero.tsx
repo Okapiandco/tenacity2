@@ -6,10 +6,6 @@ import { ArrowRight } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import {
-  SanityImage,
-  type SanityImageWithAlt,
-} from "@/components/ui/SanityImage";
 
 type HeroProps = {
   definition?: string;
@@ -19,7 +15,7 @@ type HeroProps = {
   primaryCtaHref?: string;
   secondaryCtaLabel?: string;
   secondaryCtaHref?: string;
-  backgroundImage?: SanityImageWithAlt | null;
+  backgroundImage?: string | null;
 };
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -62,8 +58,9 @@ export function Hero({
       <div className="absolute inset-0 [transform:scaleX(-1)]" aria-hidden="true">
         <div className="ken-burns absolute inset-0">
           {backgroundImage ? (
-            <SanityImage
-              image={backgroundImage}
+            <Image
+              src={backgroundImage}
+              alt=""
               fill
               priority
               sizes="100vw"

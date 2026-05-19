@@ -1,16 +1,18 @@
 import type { MetadataRoute } from "next";
 
-import { client } from "@/sanity/lib/client";
-
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://tenacity.co.uk";
 
-async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
-  const serviceSlugs = await client
-    .fetch<string[]>(`*[_type == "service"].slug.current`)
-    .catch(() => [] as string[]);
+const SERVICE_SLUGS = [
+  "coaching",
+  "consultancy",
+  "leadership-development",
+  "project-management",
+  "facilitation",
+];
 
+function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date();
   const staticPaths = ["", "/about", "/services", "/pricing", "/contact"];
   const entries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: `${SITE_URL}${path}`,
@@ -19,7 +21,7 @@ async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === "" ? 1 : 0.7,
   }));
 
-  for (const slug of serviceSlugs) {
+  for (const slug of SERVICE_SLUGS) {
     entries.push({
       url: `${SITE_URL}/services/${slug}`,
       lastModified: now,

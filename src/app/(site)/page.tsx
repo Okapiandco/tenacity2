@@ -1,37 +1,11 @@
 import type { Metadata } from "next";
-import type { PortableTextBlock } from "next-sanity";
-
-import { sanityFetch } from "@/sanity/lib/live";
+import { prisma } from "@/lib/prisma";
 import { Hero } from "@/components/home/Hero";
 import { Intro } from "@/components/home/Intro";
-import {
-  ServiceCards,
-  type ServiceSummary,
-} from "@/components/home/ServiceCards";
+import { ServiceCards } from "@/components/home/ServiceCards";
 import { AboutTeaser } from "@/components/home/AboutTeaser";
 import { CtaBand } from "@/components/home/CtaBand";
-import type { SanityImageWithAlt } from "@/components/ui/SanityImage";
-
-type HomeData = {
-  homepage: {
-    heroDefinition?: string;
-    heroHeadline: string;
-    heroSubhead?: string;
-    heroImage?: SanityImageWithAlt | null;
-    primaryCtaLabel?: string;
-    primaryCtaHref?: string;
-    secondaryCtaLabel?: string;
-    secondaryCtaHref?: string;
-    introParagraph?: string;
-    introPhotoTwo?: SanityImageWithAlt | null;
-    aboutTeaserImage?: SanityImageWithAlt | null;
-    ctaBandQuote?: string;
-  } | null;
-  services: ServiceSummary[];
-  about: {
-    shortBio?: PortableTextBlock[] | null;
-  } | null;
-};
+import type { ServiceSummary } from "@/components/services/ServiceCardGrid";
 
 export const metadata: Metadata = {
   title: {
@@ -48,60 +22,80 @@ export const metadata: Metadata = {
   },
 };
 
-const HOME_QUERY = `{
-  "homepage": *[_id == "homepage"][0]{
-    heroDefinition, heroHeadline, heroSubhead, heroImage,
-    primaryCtaLabel, primaryCtaHref,
-    secondaryCtaLabel, secondaryCtaHref,
-    introParagraph, introPhotoTwo,
-    aboutTeaserImage,
-    ctaBandQuote
-  },
-  "services": *[_type == "service"] | order(order asc){
-    _id, title, "slug": slug.current, icon, shortDescription
-  },
-  "about": *[_id == "aboutPage"][0]{
-    shortBio
-  }
-}`;
-
 export const revalidate = 60;
 
-export default async function HomePage() {
-  const { data } = (await sanityFetch({ query: HOME_QUERY })) as {
-    data: HomeData;
-  };
-  const hp = data.homepage;
+async function getHomeData() {
+  const [page, services] = await Promise.all([
+    prisma.page.findUnique({
+      where: { slug: "home" },
+      include: { sections: { where: { enabled: true }, orderBy: { order: "asc" } } },
+    }),
+    prisma.service.findMany({ orderBy: { order: "asc" } }),
+  ]);
+  return { page, services };
+}
 
-  if (!hp) {
-    return (
-      <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <p className="text-base text-muted">
-          Homepage content has not been published yet. Edit it in Sanity Studio at /studio.
-        </p>
-      </div>
-    );
+function sectionContent(sections: { type: string; content: unknown }[], type: string) {
+  return (sections.find((s) => s.type === type)?.content ?? {}) as Record<string, string>;
+}
+
+export default async function HomePage() {
+  let page: Awaited<ReturnType<typeof getHomeData>>["page"] = null;
+  let services: Awaited<ReturnType<typeof getHomeData>>["services"] = [];
+
+  try {
+    ({ page, services } = await getHomeData());
+  } catch {
+    // DB not yet configured — fall through to static fallback below
   }
+
+  const sections = page?.sections ?? [];
+  const hero = sectionContent(sections, "hero");
+  const intro = sectionContent(sections, "intro");
+  const aboutTeaser = sectionContent(sections, "about_teaser");
+  const ctaBand = sectionContent(sections, "cta_band");
+
+  const serviceSummaries: ServiceSummary[] = services.map((s) => ({
+    _id: s.id,
+    title: s.title,
+    slug: s.slug,
+    icon: s.icon,
+    shortDescription: s.shortDescription,
+  }));
+
+  // Fallback values when DB is empty or not yet migrated
+  const heroHeadline = hero.headline || "Supporting UK small business owners and leaders";
+  const introText = intro.paragraph || "At Tenacity, we believe every small business owner deserves expert support.\n\nWe are here to help you move forward with clarity and confidence.";
+  const shortBio = aboutTeaser.shortBio || "Becky Phillips is a three-time entrepreneur with over 30 years of business experience.\n\nShe founded Tenacity to help people find clarity, confidence and direction.";
+  const quote = ctaBand.quote || "The best investment you can make is in yourself and your business.";
+
+  const fallbackServices: ServiceSummary[] = [
+    { _id: "1", title: "Coaching", slug: "coaching", icon: "users", shortDescription: "One-to-one coaching to help you gain clarity, build confidence and move forward." },
+    { _id: "2", title: "Consultancy", slug: "consultancy", icon: "briefcase", shortDescription: "Expert guidance to help your business grow with purpose and direction." },
+    { _id: "3", title: "Leadership Development", slug: "leadership-development", icon: "compass", shortDescription: "Develop the leadership skills and mindset to inspire and lead effectively." },
+    { _id: "4", title: "Project Management", slug: "project-management", icon: "clipboard-check", shortDescription: "Practical support to plan, manage and deliver your projects on time." },
+    { _id: "5", title: "Facilitation", slug: "facilitation", icon: "handshake", shortDescription: "Skilled facilitation for workshops, team days and strategic planning sessions." },
+  ];
 
   return (
     <>
       <Hero
-        definition={hp.heroDefinition}
-        subhead={hp.heroSubhead}
-        headline={hp.heroHeadline}
-        backgroundImage={hp.heroImage}
-        primaryCtaLabel={hp.primaryCtaLabel}
-        primaryCtaHref={hp.primaryCtaHref}
-        secondaryCtaLabel={hp.secondaryCtaLabel}
-        secondaryCtaHref={hp.secondaryCtaHref}
+        definition={hero.definition}
+        headline={heroHeadline}
+        subhead={hero.subhead}
+        backgroundImage={hero.backgroundImage || undefined}
+        primaryCtaLabel={hero.primaryCtaLabel || "Work with us"}
+        primaryCtaHref={hero.primaryCtaHref || "/contact"}
+        secondaryCtaLabel={hero.secondaryCtaLabel || "Our services"}
+        secondaryCtaHref={hero.secondaryCtaHref || "/services"}
       />
       <Intro
-        paragraph={hp.introParagraph}
-        photoBottom={hp.introPhotoTwo}
+        paragraph={introText}
+        photoBottom={intro.photoBottom || undefined}
       />
-      <ServiceCards services={data.services} />
-      <AboutTeaser shortBio={data.about?.shortBio} image={hp.aboutTeaserImage} />
-      <CtaBand quote={hp.ctaBandQuote} />
+      <ServiceCards services={serviceSummaries.length > 0 ? serviceSummaries : fallbackServices} />
+      <AboutTeaser shortBio={shortBio} image={aboutTeaser.image || undefined} />
+      <CtaBand quote={quote} />
     </>
   );
 }

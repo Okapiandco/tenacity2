@@ -1,21 +1,14 @@
-import { sanityFetch } from "@/sanity/lib/live";
 import { HeaderClient } from "@/components/layout/HeaderClient";
 import type { NavService } from "@/components/layout/Nav";
 
-const servicesQuery = `*[_type == "service"] | order(order asc) { title, "slug": slug.current }`;
+const SERVICES: NavService[] = [
+  { title: "Coaching", slug: "coaching" },
+  { title: "Consultancy", slug: "consultancy" },
+  { title: "Leadership Development", slug: "leadership-development" },
+  { title: "Project Management", slug: "project-management" },
+  { title: "Facilitation", slug: "facilitation" },
+];
 
-async function getServices(): Promise<NavService[]> {
-  try {
-    const { data } = (await sanityFetch({ query: servicesQuery })) as {
-      data: NavService[];
-    };
-    return data;
-  } catch {
-    return [];
-  }
-}
-
-export async function Header() {
-  const services = await getServices();
-  return <HeaderClient services={services} />;
+export function Header() {
+  return <HeaderClient services={SERVICES} />;
 }

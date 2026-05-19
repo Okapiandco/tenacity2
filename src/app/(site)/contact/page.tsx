@@ -1,23 +1,15 @@
 import type { Metadata } from "next";
-import type { PortableTextBlock } from "next-sanity";
+import Image from "next/image";
 
 import { ContactForm } from "@/components/contact/ContactForm";
 import { Container } from "@/components/ui/Container";
-import { PT } from "@/components/ui/PT";
 import { Reveal } from "@/components/ui/Reveal";
-import {
-  SanityImage,
-  type SanityImageWithAlt,
-} from "@/components/ui/SanityImage";
 import { Section } from "@/components/ui/Section";
-import { sanityFetch } from "@/sanity/lib/live";
 
-type ContactData = {
-  introCopy?: PortableTextBlock[] | null;
-  heroImage?: SanityImageWithAlt | null;
-};
-
-const CONTACT_QUERY = `*[_id == "contactPage"][0]{ introCopy, heroImage }`;
+const INTRO_COPY = [
+  "We would love to hear from you. Whether you are ready to get started or just want to find out more, drop us a message and we will be in touch within one working day.",
+  "The first conversation is always free and there is absolutely no obligation.",
+];
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -32,40 +24,32 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60;
-
-export default async function ContactPage() {
-  const { data } = (await sanityFetch({ query: CONTACT_QUERY })) as {
-    data: ContactData | null;
-  };
-
+export default function ContactPage() {
   return (
     <>
       <Section tone="white" padding="md">
         <Container>
           <div className="grid gap-10 md:grid-cols-12 md:gap-16">
             <div className="md:col-span-5">
-              {data?.introCopy && data.introCopy.length > 0 ? (
-                <Reveal>
-                  <PT
-                    value={data.introCopy}
-                    className="text-base leading-relaxed sm:text-lg"
+              <Reveal>
+                <div className="space-y-5 text-base leading-relaxed sm:text-lg">
+                  {INTRO_COPY.map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+                </div>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <div className="mt-8 overflow-hidden rounded-lg">
+                  <Image
+                    src="/IMG_4354.JPG"
+                    alt="Becky Phillips"
+                    width={720}
+                    height={720}
+                    sizes="(min-width: 768px) 40vw, 100vw"
+                    className="h-auto w-full"
                   />
-                </Reveal>
-              ) : null}
-              {data?.heroImage ? (
-                <Reveal delay={0.1}>
-                  <div className="mt-8 overflow-hidden rounded-lg">
-                    <SanityImage
-                      image={data.heroImage}
-                      width={720}
-                      height={720}
-                      sizes="(min-width: 768px) 40vw, 100vw"
-                      className="h-auto w-full"
-                    />
-                  </div>
-                </Reveal>
-              ) : null}
+                </div>
+              </Reveal>
             </div>
             <Reveal className="md:col-span-7" delay={0.1}>
               <div className="h-full rounded-lg border border-border bg-white p-6 sm:p-8">

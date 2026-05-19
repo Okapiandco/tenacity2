@@ -47,6 +47,23 @@ h4 {
   border-radius: 2px;
 }
 
+/* Shared admin input style */
+.input {
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #111827;
+  background: #fff;
+  outline: none;
+}
+.input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
 .skip-to-content {
   position: absolute;
   top: 0.5rem;

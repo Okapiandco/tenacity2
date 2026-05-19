@@ -6,14 +6,10 @@ import { useRef } from "react";
 
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
-import {
-  SanityImage,
-  type SanityImageWithAlt,
-} from "@/components/ui/SanityImage";
 
 type IntroProps = {
   paragraph?: string;
-  photoBottom?: SanityImageWithAlt | null;
+  photoBottom?: string | null;
 };
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -68,22 +64,13 @@ export function Intro({ paragraph, photoBottom }: IntroProps) {
               style={{ y: y2 }}
               className="relative aspect-[4/5] overflow-hidden rounded-lg shadow-[0_30px_80px_-40px_rgba(17,24,39,0.4)]"
             >
-              {photoBottom ? (
-                <SanityImage
-                  image={photoBottom}
-                  fill
-                  sizes="(min-width: 768px) 40vw, 100vw"
-                  className="object-cover"
-                />
-              ) : (
-                <Image
-                  src="/Picture4.jpg"
-                  alt="Becky Phillips, founder of Tenacity Business Growth Consultancy"
-                  fill
-                  sizes="(min-width: 768px) 40vw, 100vw"
-                  className="object-cover"
-                />
-              )}
+              <Image
+                src={photoBottom ?? "/Picture4.jpg"}
+                alt="Becky Phillips, founder of Tenacity Business Growth Consultancy"
+                fill
+                sizes="(min-width: 768px) 40vw, 100vw"
+                className="object-cover"
+              />
             </motion.div>
           </motion.div>
         </div>

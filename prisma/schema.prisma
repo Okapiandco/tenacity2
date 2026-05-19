@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth.js required models ─────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("admin")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// ─── Site settings ────────────────────────────────────────────────────────────
+
+model SiteSettings {
+  id           String       @id @default("settings")
+  title        String       @default("Tenacity Business Growth Consultancy")
+  contactEmail String       @default("becky@tenacity.co.uk")
+  contactPhone String?
+  footerText   String?
+  updatedAt    DateTime     @updatedAt
+  socials      SocialLink[]
+}
+
+model SocialLink {
+  id             String       @id @default(cuid())
+  icon           String
+  url            String
+  order          Int          @default(0)
+  siteSettingsId String
+  settings       SiteSettings @relation(fields: [siteSettingsId], references: [id], onDelete: Cascade)
+}
+
+// ─── Pages & Sections ─────────────────────────────────────────────────────────
+
+model Page {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  title    String
+  sections Section[]
+}
+
+model Section {
+  id        String   @id @default(cuid())
+  pageId    String
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  type      String
+  order     Int
+  enabled   Boolean  @default(true)
+  content   Json     @default("{}")
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Services ─────────────────────────────────────────────────────────────────
+
+model Service {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  order            Int      @default(0)
+  icon             String   @default("briefcase")
+  shortDescription String   @default("")
+  heroImageUrl     String?
+  heroImageAlt     String?
+  body             String?
+  servicesList     Json?
+  ctaLabel         String?
+  ctaHref          String?
+  updatedAt        DateTime @updatedAt
+}
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String
+  role      String?
+  company   String?
+  photoUrl  String?
+  featured  Boolean  @default(false)
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Mailing list ─────────────────────────────────────────────────────────────
+
+model MailingListSignup {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+}

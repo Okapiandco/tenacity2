@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import { draftMode } from "next/headers";
-import { VisualEditing } from "next-sanity/visual-editing";
-import { SanityLive } from "@/sanity/lib/live";
 import { JsonLd } from "@/components/seo/StructuredData";
 import "./globals.css";
 
@@ -50,19 +47,16 @@ const organizationLd = {
   email: "becky@tenacity.co.uk",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isEnabled: isDraftMode } = await draftMode();
   return (
     <html lang="en-GB" className={montserrat.variable}>
       <body className="min-h-dvh bg-white text-muted">
         {children}
         <JsonLd data={organizationLd} />
-        <SanityLive />
-        {isDraftMode ? <VisualEditing /> : null}
       </body>
     </html>
   );
