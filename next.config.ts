@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.sanity.io" },
       { protocol: "https", hostname: "utfs.io" },
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
     ],
     // Serve AVIF first (smallest), fall back to WebP, then original
     formats: ["image/avif", "image/webp"],
