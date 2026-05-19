@@ -8,7 +8,7 @@ import { Section } from "@/components/ui/Section";
 import { JsonLd } from "@/components/seo/StructuredData";
 import { prisma } from "@/lib/prisma";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tenacity.co.uk";
+import { SITE_URL } from "@/lib/siteUrl";
 
 const personLd = {
   "@context": "https://schema.org",

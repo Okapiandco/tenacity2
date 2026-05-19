@@ -7,7 +7,7 @@ import { AboutTeaser } from "@/components/home/AboutTeaser";
 import { CtaBand } from "@/components/home/CtaBand";
 import type { ServiceSummary } from "@/components/services/ServiceCardGrid";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tenacity.co.uk";
+import { SITE_URL } from "@/lib/siteUrl";
 
 function resolveOgImage(src: string | undefined): string | undefined {
   if (!src) return undefined;

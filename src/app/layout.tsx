@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Montserrat, Inter, Playfair_Display, Lato } from "next/font/google";
 import { JsonLd } from "@/components/seo/StructuredData";
 import { prisma } from "@/lib/prisma";
+import { SITE_URL } from "@/lib/siteUrl";
 import "./globals.css";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tenacity.co.uk";
 
 const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"], display: "swap", weight: ["300", "400", "500", "600", "700"] });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
