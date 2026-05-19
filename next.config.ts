@@ -2,7 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [],
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.sanity.io" },
+      { protocol: "https", hostname: "utfs.io" },
+    ],
     // Serve AVIF first (smallest), fall back to WebP, then original
     formats: ["image/avif", "image/webp"],
     // Cache optimised images for 30 days

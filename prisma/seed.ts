@@ -62,6 +62,12 @@ async function main() {
     update: {},
   });
 
+  await prisma.page.upsert({
+    where: { slug: "services" },
+    create: { slug: "services", title: "Services" },
+    update: {},
+  });
+
   console.log("Pages done");
 
   // ─── Home sections ────────────────────────────────────────────────────────

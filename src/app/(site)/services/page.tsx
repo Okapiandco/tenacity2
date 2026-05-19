@@ -13,11 +13,20 @@ const FALLBACK: ServiceSummary[] = [
   { _id: "5", title: "Facilitation", slug: "facilitation", icon: "handshake", shortDescription: "Skilled facilitation for workshops, team days and strategic planning sessions." },
 ];
 
-export const metadata: Metadata = {
-  title: "Services",
-  description: "Coaching, consultancy, leadership and team development, project management, facilitation and mediation for UK small business owners and leaders.",
-  alternates: { canonical: "/services" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await prisma.page.findUnique({ where: { slug: "services" }, select: { metaTitle: true, metaDescription: true } });
+    if (page?.metaTitle || page?.metaDescription) {
+      return { title: page.metaTitle ?? "Services", description: page.metaDescription ?? undefined, alternates: { canonical: "/services" } };
+    }
+  } catch { /* fallback */ }
+  return {
+    title: "Services",
+    description: "Coaching, consultancy, leadership and team development, project management, facilitation and mediation for UK small business owners and leaders.",
+    alternates: { canonical: "/services" },
+    openGraph: { title: "Services, Tenacity Business Growth Consultancy", description: "Expert support for UK small business owners and leaders.", url: "/services" },
+  };
+}
 
 export const revalidate = 60;
 

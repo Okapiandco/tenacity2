@@ -32,7 +32,7 @@ export function ServiceCards({ services }: ServiceCardsProps) {
               className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-brand-ink"
             >
               <span className="inline-block h-px w-8 bg-accent" aria-hidden="true" />
-              <span>01 &mdash; Services</span>
+              <span>Services</span>
             </motion.p>
 
             <motion.h2

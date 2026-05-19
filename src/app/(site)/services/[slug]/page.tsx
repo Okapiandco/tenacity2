@@ -35,13 +35,15 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const svc = await prisma.service.findUnique({ where: { slug }, select: { title: true, shortDescription: true } });
+    const svc = await prisma.service.findUnique({ where: { slug }, select: { title: true, shortDescription: true, metaTitle: true, metaDescription: true } });
     if (!svc) return { title: "Service" };
-    const description = svc.shortDescription || `${svc.title} from Tenacity Business Growth Consultancy.`;
+    const title = svc.metaTitle ?? svc.title;
+    const description = svc.metaDescription ?? svc.shortDescription ?? `${svc.title} from Tenacity Business Growth Consultancy.`;
     return {
-      title: svc.title,
+      title,
       description,
       alternates: { canonical: `/services/${slug}` },
+      openGraph: { title: `${title}, Tenacity Business Growth Consultancy`, description, url: `/services/${slug}` },
     };
   } catch {
     return { title: "Service" };

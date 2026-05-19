@@ -65,15 +65,15 @@ export function SettingsForm({ settings }: Props) {
               onChange={(e) => setSocials((prev) => prev.map((s, j) => j === i ? { ...s, icon: e.target.value } : s))}
               className="input w-36"
             >
-              {["linkedin", "twitter", "facebook", "instagram", "youtube"].map((icon) => (
+              {["linkedin", "twitter", "x", "facebook", "instagram", "threads", "youtube"].map((icon) => (
                 <option key={icon} value={icon}>{icon}</option>
               ))}
             </select>
             <input
-              type="url"
+              type="text"
               value={social.url}
               onChange={(e) => setSocials((prev) => prev.map((s, j) => j === i ? { ...s, url: e.target.value } : s))}
-              placeholder="https://…"
+              placeholder="https://www.linkedin.com/company/..."
               className="input flex-1"
             />
             <button

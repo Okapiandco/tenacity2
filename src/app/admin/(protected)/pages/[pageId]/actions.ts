@@ -18,3 +18,11 @@ export async function toggleSection(id: string, enabled: boolean) {
   revalidatePath("/admin/pages");
   revalidatePath("/");
 }
+
+export async function savePageSeo(pageId: string, metaTitle: string, metaDescription: string) {
+  const page = await prisma.page.update({
+    where: { id: pageId },
+    data: { metaTitle: metaTitle || null, metaDescription: metaDescription || null },
+  });
+  revalidatePath(`/${page.slug === "home" ? "" : page.slug}`);
+}

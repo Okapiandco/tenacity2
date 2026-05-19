@@ -14,6 +14,7 @@ export type NavService = { title: string; slug: string };
 type NavProps = {
   services: NavService[];
   transparent?: boolean;
+  linkedInUrl: string;
 };
 
 const primaryLinks = [
@@ -26,7 +27,7 @@ const trailingLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function Nav({ services, transparent = false }: NavProps) {
+export function Nav({ services, transparent = false, linkedInUrl }: NavProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -158,7 +159,7 @@ export function Nav({ services, transparent = false }: NavProps) {
 
       <div className="hidden items-center gap-4 md:flex">
         <a
-          href="https://www.linkedin.com/in/rebecca-phillips-742361a/"
+          href={linkedInUrl}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="LinkedIn"

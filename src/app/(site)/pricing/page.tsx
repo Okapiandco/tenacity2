@@ -6,61 +6,93 @@ import { Container } from "@/components/ui/Container";
 import { Dot } from "@/components/ui/Dot";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
+import { prisma } from "@/lib/prisma";
 
-const PRICING_BODY = [
-  "At Tenacity, we believe expert business support should be accessible — not just for large organisations with big budgets, but for the micro and small businesses that make up the backbone of the UK economy.",
-  "That is why we offer fair, flexible pricing tailored to your specific needs and circumstances. We do not believe in one-size-fits-all packages — instead, we take the time to understand what you need and provide a clear, transparent proposal.",
-  "To find out more and get a tailored quote, simply get in touch for an initial conversation. There is no obligation, and the first call is always free.",
-];
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await prisma.page.findUnique({ where: { slug: "pricing" }, select: { metaTitle: true, metaDescription: true } });
+    if (page?.metaTitle || page?.metaDescription) {
+      return { title: page.metaTitle ?? "Pricing", description: page.metaDescription ?? undefined, alternates: { canonical: "/pricing" } };
+    }
+  } catch { /* fallback */ }
+  return {
+    title: "Pricing",
+    description: "Fair, accessible pricing for micro and small business owners. Enquire for a tailored proposal and quote.",
+    alternates: { canonical: "/pricing" },
+    openGraph: { title: "Pricing, Tenacity Business Growth Consultancy", description: "Fair, accessible pricing for micro and small business owners. Enquire for a tailored proposal and quote.", url: "/pricing" },
+  };
+}
 
-export const metadata: Metadata = {
-  title: "Pricing",
-  description:
-    "Fair, accessible pricing for micro and small business owners. Enquire for a tailored proposal and quote.",
-  alternates: { canonical: "/pricing" },
-  openGraph: {
-    title: "Pricing, Tenacity Business Growth Consultancy",
-    description:
-      "Fair, accessible pricing for micro and small business owners. Enquire for a tailored proposal and quote.",
-    url: "/pricing",
-  },
-};
+export const revalidate = 60;
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  let content: Record<string, unknown> = {};
+  try {
+    const page = await prisma.page.findUnique({
+      where: { slug: "pricing" },
+      include: { sections: { where: { type: "pricing_content", enabled: true }, take: 1 } },
+    });
+    if (page?.sections[0]) content = page.sections[0].content as Record<string, unknown>;
+  } catch { /* DB unavailable */ }
+
+  const heading = (content.heading as string) || "Pricing to Match Your Budget and Ambition";
+  const introText = (content.introText as string) || "Our pricing has been carefully thought through to be fair and accessible - so we can work with the clients we really want to - individuals, micro-business owners and SME's. We don't believe in putting up barriers that stop many people and small business owners accessing the support they need to move forward.\n\nOur services are delivered at a fair price but with no compromise to the scope, quality and professionalism.\n\nWe offer a tiered policy for:";
+  const body = (content.body as string) || "Individuals & Freelancers\n\nMicro-business Owners\n\nSME Leaders\n\nCharities";
+  const closingText = (content.closingText as string) || "We'd love to find out more about you and how we can help. Please do get in touch to arrange a call so that we can send over a proposal and price.";
+  const ctaLabel = (content.ctaLabel as string) || "Enquire about pricing";
+  const ctaHref = (content.ctaHref as string) || "/contact";
+  const heroImage = (content.heroImage as string) || "/Picture2.jpg";
+
+  const introParagraphs = introText.split(/\n{2,}/).filter(Boolean);
+  const bulletPoints = body.split(/\n{2,}/).filter(Boolean);
+
   return (
     <Section tone="white" padding="lg">
       <Container>
         <div className="grid gap-10 md:grid-cols-12 md:items-start md:gap-16">
-          <div className="md:col-span-5">
+          <Reveal className="md:col-span-5">
             <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-brand-ink">
               <Dot />
               Pricing
             </p>
             <h1 className="mt-6 text-4xl font-semibold leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-6xl">
-              Fair, accessible support<span className="text-accent">.</span>
+              {heading}
             </h1>
-          </div>
-
-          <Reveal className="md:col-span-7" delay={0.1}>
-            <div className="overflow-hidden rounded-lg">
-              <Image
-                src="/Picture2.jpg"
-                alt="Becky Phillips out in nature"
-                width={720}
-                height={960}
-                sizes="(min-width: 768px) 55vw, 100vw"
-                className="h-auto w-full"
-                priority
-              />
-            </div>
             <div className="mt-8 space-y-5 text-base leading-relaxed text-ink/80 sm:text-lg">
-              {PRICING_BODY.map((p, i) => (
+              {introParagraphs.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
             </div>
-            <div className="mt-8">
-              <ButtonLink href="/contact" size="lg">
-                Get in touch
+            <ul className="mt-6 space-y-4">
+              {bulletPoints.map((point, i) => (
+                <li key={i} className="flex items-start gap-3 text-base leading-relaxed text-ink/80 sm:text-lg">
+                  <span className="mt-[0.35em] flex h-3 w-3 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal className="md:col-span-7" delay={0.1}>
+            {heroImage && (
+              <div className="overflow-hidden rounded-lg">
+                <Image
+                  src={heroImage}
+                  alt="Becky Phillips"
+                  width={720}
+                  height={960}
+                  sizes="(min-width: 768px) 55vw, 100vw"
+                  className="h-auto w-full"
+                  priority
+                />
+              </div>
+            )}
+            {closingText && (
+              <p className="mt-8 text-base leading-relaxed text-ink/80 sm:text-lg">{closingText}</p>
+            )}
+            <div className="mt-6">
+              <ButtonLink href={ctaHref} size="lg">
+                {ctaLabel}
               </ButtonLink>
             </div>
           </Reveal>

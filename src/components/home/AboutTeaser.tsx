@@ -46,7 +46,7 @@ export function AboutTeaser({ shortBio, image }: AboutTeaserProps) {
               className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-white/60"
             >
               <span className="inline-block h-px w-8 bg-accent" aria-hidden="true" />
-              <span>02 &mdash; The Founder</span>
+              <span>The Founder</span>
             </motion.p>
 
             <motion.h2

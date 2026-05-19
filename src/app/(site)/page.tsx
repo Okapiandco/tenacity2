@@ -7,20 +7,47 @@ import { AboutTeaser } from "@/components/home/AboutTeaser";
 import { CtaBand } from "@/components/home/CtaBand";
 import type { ServiceSummary } from "@/components/services/ServiceCardGrid";
 
-export const metadata: Metadata = {
-  title: {
-    absolute: "Tenacity Business Growth Consultancy | Coaching & Business Consultancy",
-  },
-  description:
-    "Tenacity helps UK small business owners and leaders find clarity, confidence and direction through coaching, consultancy, leadership development, project management and facilitation.",
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: "Tenacity Business Growth Consultancy",
-    description:
-      "Coaching, consultancy and leadership support for UK small business owners and individuals — led by Becky Phillips.",
-    url: "/",
-  },
-};
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tenacity.co.uk";
+
+function resolveOgImage(src: string | undefined): string | undefined {
+  if (!src) return undefined;
+  if (src.startsWith("http")) return src;
+  return `${SITE_URL}${src.startsWith("/") ? "" : "/"}${src}`;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await prisma.page.findUnique({
+      where: { slug: "home" },
+      select: { metaTitle: true, metaDescription: true, sections: { where: { type: "hero", enabled: true }, take: 1, select: { content: true } } },
+    });
+    const heroContent = (page?.sections[0]?.content ?? {}) as Record<string, string>;
+    const ogImage = resolveOgImage(heroContent.backgroundImage);
+    const title = page?.metaTitle ?? "Tenacity Business Growth Consultancy | Coaching & Business Consultancy";
+    const description = page?.metaDescription ?? "Tenacity helps UK small business owners and leaders find clarity, confidence and direction through coaching, consultancy, leadership development, project management and facilitation.";
+    return {
+      title: { absolute: title },
+      description,
+      alternates: { canonical: "/" },
+      openGraph: {
+        title: page?.metaTitle ?? "Tenacity Business Growth Consultancy",
+        description,
+        url: "/",
+        ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 800, alt: "Tenacity Business Growth Consultancy" }] } : {}),
+      },
+      twitter: {
+        card: "summary_large_image",
+        ...(ogImage ? { images: [ogImage] } : {}),
+      },
+    };
+  } catch { /* fallback */ }
+  return {
+    title: { absolute: "Tenacity Business Growth Consultancy | Coaching & Business Consultancy" },
+    description: "Tenacity helps UK small business owners and leaders find clarity, confidence and direction through coaching, consultancy, leadership development, project management and facilitation.",
+    alternates: { canonical: "/" },
+    openGraph: { title: "Tenacity Business Growth Consultancy", description: "Coaching, consultancy and leadership support for UK small business owners and individuals — led by Becky Phillips.", url: "/" },
+  };
+}
 
 export const revalidate = 60;
 

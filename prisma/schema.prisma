@@ -61,13 +61,14 @@ model VerificationToken {
 // ─── Site settings ────────────────────────────────────────────────────────────
 
 model SiteSettings {
-  id           String       @id @default("settings")
-  title        String       @default("Tenacity Business Growth Consultancy")
-  contactEmail String       @default("becky@tenacity.co.uk")
-  contactPhone String?
-  footerText   String?
-  updatedAt    DateTime     @updatedAt
-  socials      SocialLink[]
+  id            String       @id @default("settings")
+  title         String       @default("Tenacity Business Growth Consultancy")
+  contactEmail  String       @default("becky@tenacity.co.uk")
+  contactPhone  String?
+  footerText    String?
+  brandSettings Json?
+  updatedAt     DateTime     @updatedAt
+  socials       SocialLink[]
 }
 
 model SocialLink {
@@ -82,10 +83,12 @@ model SocialLink {
 // ─── Pages & Sections ─────────────────────────────────────────────────────────
 
 model Page {
-  id       String    @id @default(cuid())
-  slug     String    @unique
-  title    String
-  sections Section[]
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  metaTitle       String?
+  metaDescription String?
+  sections        Section[]
 }
 
 model Section {
@@ -114,6 +117,8 @@ model Service {
   servicesList     Json?
   ctaLabel         String?
   ctaHref          String?
+  metaTitle        String?
+  metaDescription  String?
   updatedAt        DateTime @updatedAt
 }
 

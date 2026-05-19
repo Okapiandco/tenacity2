@@ -12,9 +12,10 @@ import { cn } from "@/lib/cn";
 
 type HeaderClientProps = {
   services: NavService[];
+  linkedInUrl: string;
 };
 
-export function HeaderClient({ services }: HeaderClientProps) {
+export function HeaderClient({ services, linkedInUrl }: HeaderClientProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
@@ -42,13 +43,13 @@ export function HeaderClient({ services }: HeaderClientProps) {
         <Link
           href="/"
           aria-label="Tenacity Business Growth Consultancy, home"
-          className="group inline-flex items-center gap-3"
+          className="group inline-flex items-center"
         >
           <Image
             src={logo}
             alt="Tenacity Business Growth Consultancy"
             className={cn(
-              "h-16 w-auto transition-[filter,transform] duration-500 ease-out md:h-20",
+              "-ml-2 h-16 w-auto transition-[filter,transform] duration-500 ease-out md:h-20",
               "group-hover:scale-[1.02]",
               transparent
                 ? "[filter:brightness(0)_invert(1)_drop-shadow(0_1px_12px_rgba(0,0,0,0.35))]"
@@ -57,7 +58,7 @@ export function HeaderClient({ services }: HeaderClientProps) {
             priority
           />
         </Link>
-        <Nav services={services} transparent={transparent} />
+        <Nav services={services} transparent={transparent} linkedInUrl={linkedInUrl} />
       </Container>
     </header>
   );

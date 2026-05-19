@@ -32,5 +32,13 @@ export async function saveService(
     },
   });
   revalidatePath("/services");
-  revalidatePath(`/services`);
+  revalidatePath(`/services/${id}`);
+}
+
+export async function saveServiceSeo(id: string, metaTitle: string, metaDescription: string) {
+  const svc = await prisma.service.update({
+    where: { id },
+    data: { metaTitle: metaTitle || null, metaDescription: metaDescription || null },
+  });
+  revalidatePath(`/services/${svc.slug}`);
 }

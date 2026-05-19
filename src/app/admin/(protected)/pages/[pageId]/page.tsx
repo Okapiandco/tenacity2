@@ -3,13 +3,17 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { reorderSections, toggleSection } from "./actions";
 import { SectionReorderList } from "./SectionReorderList";
+import { PageSeoEditor } from "./PageSeoEditor";
 
 const SECTION_LABELS: Record<string, string> = {
   hero: "Hero banner",
   intro: "Introduction",
   service_cards: "Service cards",
   about_teaser: "Meet Becky (about teaser)",
+  about_bio: "About bio",
   cta_band: "Call to action band",
+  pricing_content: "Pricing content",
+  contact_content: "Contact content",
 };
 
 type PageProps = { params: Promise<{ pageId: string }> };
@@ -32,21 +36,30 @@ export default async function PageEditor({ params }: PageProps) {
         <h1 className="text-2xl font-semibold text-gray-900">{page.title}</h1>
       </div>
 
-      <p className="mb-4 text-sm text-gray-500">
-        Drag sections to reorder them. Click <strong>Edit</strong> to change content.
-      </p>
+      <div className="space-y-8">
+        <div>
+          <p className="mb-4 text-sm text-gray-500">
+            Drag sections to reorder them. Click <strong>Edit</strong> to change content.
+          </p>
+          <SectionReorderList
+            sections={page.sections.map((s) => ({
+              id: s.id,
+              type: s.type,
+              label: SECTION_LABELS[s.type] ?? s.type,
+              enabled: s.enabled,
+              order: s.order,
+            }))}
+            reorderAction={reorderSections}
+            toggleAction={toggleSection}
+          />
+        </div>
 
-      <SectionReorderList
-        sections={page.sections.map((s) => ({
-          id: s.id,
-          type: s.type,
-          label: SECTION_LABELS[s.type] ?? s.type,
-          enabled: s.enabled,
-          order: s.order,
-        }))}
-        reorderAction={reorderSections}
-        toggleAction={toggleSection}
-      />
+        <PageSeoEditor
+          pageId={page.id}
+          metaTitle={page.metaTitle ?? ""}
+          metaDescription={page.metaDescription ?? ""}
+        />
+      </div>
     </>
   );
 }

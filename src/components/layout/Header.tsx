@@ -1,14 +1,26 @@
 import { HeaderClient } from "@/components/layout/HeaderClient";
-import type { NavService } from "@/components/layout/Nav";
+import { prisma } from "@/lib/prisma";
 
-const SERVICES: NavService[] = [
-  { title: "Coaching", slug: "coaching" },
-  { title: "Consultancy", slug: "consultancy" },
-  { title: "Leadership Development", slug: "leadership-development" },
+const FALLBACK_SERVICES = [
+  { title: "Business Consultancy", slug: "business-consultancy" },
+  { title: "Coaching & Mentoring", slug: "coaching-mentoring" },
+  { title: "Careers & Employability Coaching", slug: "careers-employability-coaching" },
+  { title: "Leadership & People Development", slug: "leadership-people-development" },
+  { title: "Facilitation & Mediation", slug: "facilitation-mediation" },
   { title: "Project Management", slug: "project-management" },
-  { title: "Facilitation", slug: "facilitation" },
 ];
 
-export function Header() {
-  return <HeaderClient services={SERVICES} />;
+export async function Header() {
+  let services = FALLBACK_SERVICES;
+  let linkedInUrl = "https://www.linkedin.com/in/rebecca-phillips-742361a/";
+  try {
+    const [rows, settings] = await Promise.all([
+      prisma.service.findMany({ select: { title: true, slug: true }, orderBy: { order: "asc" } }),
+      prisma.siteSettings.findUnique({ where: { id: "settings" }, include: { socials: { orderBy: { order: "asc" } } } }),
+    ]);
+    if (rows.length > 0) services = rows;
+    const li = settings?.socials.find(s => s.icon === "linkedin");
+    if (li?.url) linkedInUrl = li.url;
+  } catch { /* DB unavailable */ }
+  return <HeaderClient services={services} linkedInUrl={linkedInUrl} />;
 }

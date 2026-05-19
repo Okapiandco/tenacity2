@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ServiceEditorForm } from "./ServiceEditorForm";
+import { ServiceSeoEditor } from "./ServiceSeoEditor";
 
 type PageProps = { params: Promise<{ serviceId: string }> };
 
@@ -19,7 +20,14 @@ export default async function ServiceEditor({ params }: PageProps) {
         <span className="text-gray-300">/</span>
         <h1 className="text-2xl font-semibold text-gray-900">{service.title}</h1>
       </div>
-      <ServiceEditorForm service={service} />
+      <div className="space-y-8">
+        <ServiceEditorForm service={service} />
+        <ServiceSeoEditor
+          serviceId={service.id}
+          metaTitle={service.metaTitle ?? ""}
+          metaDescription={service.metaDescription ?? ""}
+        />
+      </div>
     </>
   );
 }

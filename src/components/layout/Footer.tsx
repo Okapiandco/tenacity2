@@ -8,7 +8,7 @@ import { MailingListForm } from "@/components/layout/MailingListForm";
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="mt-24 border-t border-border bg-surface">
+    <footer className="border-t border-border bg-surface">
       <Container className="grid gap-10 py-12 md:grid-cols-3">
 
         <div>
@@ -20,7 +20,7 @@ export function Footer() {
             <Image
               src={logo}
               alt="Tenacity Business Growth Consultancy"
-              className="h-24 w-auto md:h-32"
+              className="-ml-2 h-16 w-auto md:h-20"
             />
           </Link>
           <p className="mt-4 text-sm text-muted">

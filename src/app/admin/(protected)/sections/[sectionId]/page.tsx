@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { HeroEditor } from "./editors/HeroEditor";
 import { IntroEditor } from "./editors/IntroEditor";
 import { AboutTeaserEditor } from "./editors/AboutTeaserEditor";
+import { AboutBioEditor } from "./editors/AboutBioEditor";
 import { CtaBandEditor } from "./editors/CtaBandEditor";
+import { PricingContentEditor } from "./editors/PricingContentEditor";
+import { ContactContentEditor } from "./editors/ContactContentEditor";
 
 type PageProps = { params: Promise<{ sectionId: string }> };
 
@@ -25,10 +28,7 @@ export default async function SectionEditor({ params }: PageProps) {
           ← Pages
         </Link>
         <span className="text-gray-300">/</span>
-        <Link
-          href={`/admin/pages/${section.pageId}`}
-          className="text-sm text-gray-400 hover:text-gray-900"
-        >
+        <Link href={`/admin/pages/${section.pageId}`} className="text-sm text-gray-400 hover:text-gray-900">
           {section.page.title}
         </Link>
         <span className="text-gray-300">/</span>
@@ -37,24 +37,17 @@ export default async function SectionEditor({ params }: PageProps) {
         </h1>
       </div>
 
-      {section.type === "hero" && (
-        <HeroEditor sectionId={section.id} content={content} />
-      )}
-      {section.type === "intro" && (
-        <IntroEditor sectionId={section.id} content={content} />
-      )}
-      {section.type === "about_teaser" && (
-        <AboutTeaserEditor sectionId={section.id} content={content} />
-      )}
-      {section.type === "cta_band" && (
-        <CtaBandEditor sectionId={section.id} content={content} />
-      )}
+      {section.type === "hero" && <HeroEditor sectionId={section.id} content={content} />}
+      {section.type === "intro" && <IntroEditor sectionId={section.id} content={content} />}
+      {section.type === "about_teaser" && <AboutTeaserEditor sectionId={section.id} content={content} />}
+      {section.type === "about_bio" && <AboutBioEditor sectionId={section.id} content={content} />}
+      {section.type === "cta_band" && <CtaBandEditor sectionId={section.id} content={content} />}
+      {section.type === "pricing_content" && <PricingContentEditor sectionId={section.id} content={content} />}
+      {section.type === "contact_content" && <ContactContentEditor sectionId={section.id} content={content} />}
       {section.type === "service_cards" && (
         <p className="rounded-lg border border-gray-200 bg-white p-6 text-sm text-gray-500">
           The Service Cards section automatically pulls content from your{" "}
-          <Link href="/admin/services" className="text-blue-600 underline">
-            Services
-          </Link>{" "}
+          <Link href="/admin/services" className="text-blue-600 underline">Services</Link>{" "}
           list — no manual editing needed here.
         </p>
       )}
