@@ -5,7 +5,6 @@ const FALLBACK_SERVICES = [
   { title: "Business Consultancy", slug: "business-consultancy" },
   { title: "Coaching & Mentoring", slug: "coaching-mentoring" },
   { title: "Careers & Employability Coaching", slug: "careers-employability-coaching" },
-  { title: "Leadership & People Development", slug: "leadership-people-development" },
   { title: "Facilitation & Mediation", slug: "facilitation-mediation" },
   { title: "Project Management", slug: "project-management" },
 ];
@@ -15,7 +14,7 @@ export async function Header() {
   let linkedInUrl = "https://www.linkedin.com/in/rebecca-phillips-742361a/";
   try {
     const [rows, settings] = await Promise.all([
-      prisma.service.findMany({ select: { title: true, slug: true }, orderBy: { order: "asc" } }),
+      prisma.service.findMany({ where: { hidden: false }, select: { title: true, slug: true }, orderBy: { order: "asc" } }),
       prisma.siteSettings.findUnique({ where: { id: "settings" }, include: { socials: { orderBy: { order: "asc" } } } }),
     ]);
     if (rows.length > 0) services = rows;
