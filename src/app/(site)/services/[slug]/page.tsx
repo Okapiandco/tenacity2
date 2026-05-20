@@ -56,6 +56,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     id: string; title: string; slug: string; icon: string;
     shortDescription: string; heroImageUrl: string | null;
     body: string | null; servicesList: unknown; ctaLabel: string | null; ctaHref: string | null;
+    hidden: boolean;
   } | null = null;
 
   let others: { id: string; title: string; slug: string }[] = [];
