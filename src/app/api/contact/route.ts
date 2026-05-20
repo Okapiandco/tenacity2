@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
 import { contactSchema } from "@/lib/contact-schema";
+import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -132,22 +133,25 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error("Resend send error:", error);
       return NextResponse.json(
-        {
-          ok: false,
-          error: "Could not send your message. Please try again later.",
-        },
+        { ok: false, error: "Could not send your message. Please try again later." },
         { status: 502 },
       );
     }
-    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Resend exception:", err);
     return NextResponse.json(
-      {
-        ok: false,
-        error: "Could not send your message. Please try again later.",
-      },
+      { ok: false, error: "Could not send your message. Please try again later." },
       { status: 500 },
     );
   }
+
+  try {
+    await prisma.contactSubmission.create({
+      data: { name, email, phone: phone ?? null, company: company ?? null, message, hearAbout: hearAbout ?? null },
+    });
+  } catch (err) {
+    console.error("Failed to save contact submission:", err);
+  }
+
+  return NextResponse.json({ ok: true });
 }

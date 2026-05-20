@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -44,7 +45,16 @@ export async function POST(request: NextRequest) {
 
   if (result.data.website) return NextResponse.json({ ok: true });
 
-  // TODO: store email in database (Phase 8)
-  console.log("Mailing list signup:", result.data.email);
+  try {
+    await prisma.mailingListSignup.upsert({
+      where: { email: result.data.email },
+      update: {},
+      create: { email: result.data.email },
+    });
+  } catch (err) {
+    console.error("Failed to save mailing list signup:", err);
+    return NextResponse.json({ ok: false, error: "Could not save your email. Please try again." }, { status: 500 });
+  }
+
   return NextResponse.json({ ok: true });
 }

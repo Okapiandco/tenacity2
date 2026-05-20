@@ -137,6 +137,19 @@ model Testimonial {
   updatedAt DateTime @updatedAt
 }
 
+// ─── Contact submissions ──────────────────────────────────────────────────────
+
+model ContactSubmission {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String?
+  company    String?
+  message    String
+  hearAbout  String?
+  createdAt  DateTime @default(now())
+}
+
 // ─── Mailing list ─────────────────────────────────────────────────────────────
 
 model MailingListSignup {

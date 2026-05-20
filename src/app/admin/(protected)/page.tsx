@@ -5,6 +5,8 @@ const CARDS = [
   { href: "/admin/services", label: "Services", description: "Manage your five service pages — text, images and order." },
   { href: "/admin/testimonials", label: "Testimonials", description: "Add, edit and feature client testimonials." },
   { href: "/admin/settings", label: "Site Settings", description: "Update your contact details, social links and footer." },
+  { href: "/admin/enquiries", label: "Enquiries", description: "View all contact form submissions from the website." },
+  { href: "/admin/mailing-list", label: "Mailing List", description: "View everyone who has signed up to hear from Tenacity." },
 ];
 
 export default function AdminDashboard() {
