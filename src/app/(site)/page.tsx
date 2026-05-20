@@ -57,7 +57,7 @@ async function getHomeData() {
       where: { slug: "home" },
       include: { sections: { where: { enabled: true }, orderBy: { order: "asc" } } },
     }),
-    prisma.service.findMany({ orderBy: { order: "asc" } }),
+    prisma.service.findMany({ where: { hidden: false }, orderBy: { order: "asc" } }),
   ]);
   return { page, services };
 }
@@ -99,7 +99,6 @@ export default async function HomePage() {
   const fallbackServices: ServiceSummary[] = [
     { _id: "1", title: "Coaching", slug: "coaching", icon: "users", shortDescription: "One-to-one coaching to help you gain clarity, build confidence and move forward." },
     { _id: "2", title: "Consultancy", slug: "consultancy", icon: "briefcase", shortDescription: "Expert guidance to help your business grow with purpose and direction." },
-    { _id: "3", title: "Leadership Development", slug: "leadership-development", icon: "compass", shortDescription: "Develop the leadership skills and mindset to inspire and lead effectively." },
     { _id: "4", title: "Project Management", slug: "project-management", icon: "clipboard-check", shortDescription: "Practical support to plan, manage and deliver your projects on time." },
     { _id: "5", title: "Facilitation", slug: "facilitation", icon: "handshake", shortDescription: "Skilled facilitation for workshops, team days and strategic planning sessions." },
   ];

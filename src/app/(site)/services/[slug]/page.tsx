@@ -19,13 +19,12 @@ export const revalidate = 60;
 
 export async function generateStaticParams() {
   try {
-    const services = await prisma.service.findMany({ select: { slug: true } });
+    const services = await prisma.service.findMany({ where: { hidden: false }, select: { slug: true } });
     return services.map((s) => ({ slug: s.slug }));
   } catch {
     return [
       { slug: "coaching" },
       { slug: "consultancy" },
-      { slug: "leadership-development" },
       { slug: "project-management" },
       { slug: "facilitation" },
     ];
@@ -64,11 +63,11 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   try {
     [service, others] = await Promise.all([
       prisma.service.findUnique({ where: { slug } }),
-      prisma.service.findMany({ where: { slug: { not: slug } }, orderBy: { order: "asc" }, select: { id: true, title: true, slug: true } }),
+      prisma.service.findMany({ where: { slug: { not: slug }, hidden: false }, orderBy: { order: "asc" }, select: { id: true, title: true, slug: true } }),
     ]);
   } catch { /* DB not yet migrated — will 404 */ }
 
-  if (!service) notFound();
+  if (!service || service.hidden) notFound();
 
   const bodyParagraphs = service.body?.split(/\n{2,}/).filter(Boolean) ?? [];
   const servicesList = (service.servicesList as ServicesListItem[] | null) ?? [];

@@ -119,6 +119,7 @@ model Service {
   ctaHref          String?
   metaTitle        String?
   metaDescription  String?
+  hidden           Boolean  @default(false)
   updatedAt        DateTime @updatedAt
 }
 

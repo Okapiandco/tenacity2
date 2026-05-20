@@ -54,7 +54,9 @@ export function ServiceCardGrid({
   const gridClass =
     columns === "five"
       ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
-      : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
+      : services.length === 4
+        ? "grid gap-4 sm:grid-cols-2"
+        : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
   return (
     <ul className={cn(gridClass, className)}>
       {services.map((s, i) => {

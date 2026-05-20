@@ -22,6 +22,7 @@ export function ServiceEditorForm({ service }: Props) {
   );
   const [ctaLabel, setCtaLabel] = useState(service.ctaLabel ?? "");
   const [ctaHref, setCtaHref] = useState(service.ctaHref ?? "");
+  const [hidden, setHidden] = useState(service.hidden ?? false);
   const [saved, setSaved] = useState(false);
   const [, startTransition] = useTransition();
 
@@ -50,6 +51,7 @@ export function ServiceEditorForm({ service }: Props) {
         servicesList: servicesList.filter((i) => i.label.trim()),
         ctaLabel,
         ctaHref,
+        hidden,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -58,6 +60,26 @@ export function ServiceEditorForm({ service }: Props) {
 
   return (
     <div className="space-y-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <label className="flex items-center justify-between gap-4 cursor-pointer">
+          <div>
+            <p className="font-semibold text-gray-800">Visibility</p>
+            <p className="text-sm text-gray-500 mt-0.5">
+              {hidden ? "Hidden from public — record kept in admin" : "Visible to the public"}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={!hidden}
+            onClick={() => setHidden((h) => !h)}
+            className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-ink ${hidden ? "bg-gray-300" : "bg-brand-ink"}`}
+          >
+            <span className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform ${hidden ? "translate-x-0" : "translate-x-5"}`} />
+          </button>
+        </label>
+      </div>
+
       <div className="rounded-lg border border-gray-200 bg-white p-6 space-y-5">
         <h2 className="font-semibold text-gray-800">Basic Info</h2>
         <Field label="Service title" required>

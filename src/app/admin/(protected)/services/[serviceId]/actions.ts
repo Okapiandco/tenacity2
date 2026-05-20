@@ -16,6 +16,7 @@ export async function saveService(
     servicesList: ServicesListItem[];
     ctaLabel: string;
     ctaHref: string;
+    hidden: boolean;
   },
 ) {
   await prisma.service.update({
@@ -29,6 +30,7 @@ export async function saveService(
       servicesList: data.servicesList,
       ctaLabel: data.ctaLabel || null,
       ctaHref: data.ctaHref || null,
+      hidden: data.hidden,
     },
   });
   revalidatePath("/services");
