@@ -7,6 +7,7 @@ export function MailingListForm() {
   const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [formLoadedAt] = useState(() => Date.now());
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -17,7 +18,7 @@ export function MailingListForm() {
       const res = await fetch("/api/mailing-list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, website }),
+        body: JSON.stringify({ email, website, formLoadedAt }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {

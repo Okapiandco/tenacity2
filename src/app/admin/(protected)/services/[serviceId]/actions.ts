@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
 type ServicesListItem = { label: string; description?: string };
 
@@ -19,6 +20,9 @@ export async function saveService(
     hidden: boolean;
   },
 ) {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+
   await prisma.service.update({
     where: { id },
     data: {
@@ -38,6 +42,9 @@ export async function saveService(
 }
 
 export async function saveServiceSeo(id: string, metaTitle: string, metaDescription: string) {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+
   const svc = await prisma.service.update({
     where: { id },
     data: { metaTitle: metaTitle || null, metaDescription: metaDescription || null },

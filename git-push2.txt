@@ -1,0 +1,8 @@
+﻿git : To https://github.com/Okapiandco/tenacity2.git
+At line:4 char:1
++ git push origin main 2>&1 | Out-File 'C:\Users\jim\tenacity2\git-push ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://gith...o/tenacity2.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   df7cd89..f35ce34  main -> main

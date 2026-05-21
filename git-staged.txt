@@ -1,0 +1,68 @@
+﻿M  next.config.ts
+A  prisma/add-services-page.ts
+A  prisma/migrate-from-sanity.ts
+A  prisma/migrations/20260519073908_init/migration.sql
+A  prisma/migrations/20260519083703_add_brand_settings/migration.sql
+A  prisma/migrations/20260519084307_add_seo_meta/migration.sql
+A  prisma/migrations/migration_lock.toml
+M  prisma/schema.prisma
+M  prisma/seed.ts
+A  prisma/update-linkedin.ts
+A  prisma/update-pricing-bullets.ts
+A  prisma/update-pricing-content.ts
+A  prisma/update-pricing-intro.ts
+M  src/app/(site)/about/page.tsx
+M  src/app/(site)/contact/page.tsx
+M  src/app/(site)/page.tsx
+M  src/app/(site)/pricing/page.tsx
+M  src/app/(site)/services/[slug]/page.tsx
+M  src/app/(site)/services/page.tsx
+R  src/app/admin/layout.tsx -> src/app/admin/(protected)/layout.tsx
+R  src/app/admin/page.tsx -> src/app/admin/(protected)/page.tsx
+A  src/app/admin/(protected)/pages/[pageId]/PageSeoEditor.tsx
+R  src/app/admin/pages/[pageId]/SectionReorderList.tsx -> src/app/admin/(protected)/pages/[pageId]/SectionReorderList.tsx
+R  src/app/admin/pages/[pageId]/actions.ts -> src/app/admin/(protected)/pages/[pageId]/actions.ts
+R  src/app/admin/pages/[pageId]/page.tsx -> src/app/admin/(protected)/pages/[pageId]/page.tsx
+R  src/app/admin/pages/page.tsx -> src/app/admin/(protected)/pages/page.tsx
+R  src/app/admin/sections/[sectionId]/actions.ts -> src/app/admin/(protected)/sections/[sectionId]/actions.ts
+A  src/app/admin/(protected)/sections/[sectionId]/editors/AboutBioEditor.tsx
+R  src/app/admin/sections/[sectionId]/editors/AboutTeaserEditor.tsx -> src/app/admin/(protected)/sections/[sectionId]/editors/AboutTeaserEditor.tsx
+A  src/app/admin/(protected)/sections/[sectionId]/editors/ContactContentEditor.tsx
+R  src/app/admin/sections/[sectionId]/editors/CtaBandEditor.tsx -> src/app/admin/(protected)/sections/[sectionId]/editors/CtaBandEditor.tsx
+R  src/app/admin/sections/[sectionId]/editors/HeroEditor.tsx -> src/app/admin/(protected)/sections/[sectionId]/editors/HeroEditor.tsx
+R  src/app/admin/sections/[sectionId]/editors/IntroEditor.tsx -> src/app/admin/(protected)/sections/[sectionId]/editors/IntroEditor.tsx
+A  src/app/admin/(protected)/sections/[sectionId]/editors/PricingContentEditor.tsx
+R  src/app/admin/sections/[sectionId]/page.tsx -> src/app/admin/(protected)/sections/[sectionId]/page.tsx
+R  src/app/admin/services/[serviceId]/ServiceEditorForm.tsx -> src/app/admin/(protected)/services/[serviceId]/ServiceEditorForm.tsx
+A  src/app/admin/(protected)/services/[serviceId]/ServiceSeoEditor.tsx
+R  src/app/admin/services/[serviceId]/actions.ts -> src/app/admin/(protected)/services/[serviceId]/actions.ts
+R  src/app/admin/services/[serviceId]/page.tsx -> src/app/admin/(protected)/services/[serviceId]/page.tsx
+R  src/app/admin/services/page.tsx -> src/app/admin/(protected)/services/page.tsx
+A  src/app/admin/(protected)/settings/BrandSettingsForm.tsx
+R  src/app/admin/settings/SettingsForm.tsx -> src/app/admin/(protected)/settings/SettingsForm.tsx
+A  src/app/admin/(protected)/settings/actions.ts
+A  src/app/admin/(protected)/settings/page.tsx
+R  src/app/admin/testimonials/TestimonialsManager.tsx -> src/app/admin/(protected)/testimonials/TestimonialsManager.tsx
+R  src/app/admin/testimonials/actions.ts -> src/app/admin/(protected)/testimonials/actions.ts
+R  src/app/admin/testimonials/page.tsx -> src/app/admin/(protected)/testimonials/page.tsx
+D  src/app/admin/settings/actions.ts
+D  src/app/admin/settings/page.tsx
+M  src/app/layout.tsx
+A  src/components/admin/SeoMetaEditor.tsx
+M  src/components/home/AboutTeaser.tsx
+M  src/components/home/ServiceCards.tsx
+M  src/components/layout/Footer.tsx
+M  src/components/layout/Header.tsx
+M  src/components/layout/HeaderClient.tsx
+M  src/components/layout/Nav.tsx
+R  src/middleware.ts -> src/proxy.ts
+?? add-services-output.txt
+?? git-staged.txt
+?? git-status.txt
+?? prisma/clear-services.ts
+?? public/uploads/
+?? tsc-output.txt
+?? update-bullets-output.txt
+?? update-intro-output.txt
+?? update-linkedin-output.txt
+?? update-pricing-output.txt

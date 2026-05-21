@@ -1,0 +1,14 @@
+﻿Progress: resolved 0, reused 1, downloaded 0, added 0
+ WARN  deprecated @types/bcryptjs@3.0.0: This is a stub types definition. bcryptjs provides its own type definitions, so you do not need this installed.
+Progress: resolved 28, reused 27, downloaded 1, added 0
+Progress: resolved 29, reused 28, downloaded 1, added 0
+Progress: resolved 38, reused 37, downloaded 1, added 0
+Progress: resolved 456, reused 355, downloaded 6, added 0
+Packages: +7
++++++++
+Progress: resolved 542, reused 436, downloaded 6, added 6, done
+
+dependencies:
++ @vercel/blob 2.4.0
+
+Done in 5.3s using pnpm v10.33.0

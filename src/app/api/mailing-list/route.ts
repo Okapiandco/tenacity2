@@ -6,7 +6,8 @@ export const runtime = "nodejs";
 
 const schema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  website: z.string().max(0).optional().or(z.literal("")),
+  website: z.string().optional().or(z.literal("")),
+  formLoadedAt: z.coerce.number().optional(),
 });
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -26,9 +27,7 @@ function checkRateLimit(ip: string): boolean {
 }
 
 function clientIp(request: NextRequest): string {
-  const fwd = request.headers.get("x-forwarded-for");
-  if (fwd) return fwd.split(",").at(-1)!.trim();
-  return request.headers.get("x-real-ip") ?? "unknown";
+  return (request as any).ip ?? request.headers.get("x-real-ip") ?? "unknown";
 }
 
 export async function POST(request: NextRequest) {
@@ -44,6 +43,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: result.error.issues[0]?.message ?? "Invalid email" }, { status: 400 });
 
   if (result.data.website) return NextResponse.json({ ok: true });
+
+  // Time-to-submit honeypot check: silently accept if completed too quickly (e.g. under 2 seconds)
+  if (result.data.formLoadedAt && Date.now() - result.data.formLoadedAt < 2000) {
+    console.warn("Mailing list submitted too quickly (under 2 seconds). Silently accepting.");
+    return NextResponse.json({ ok: true });
+  }
 
   try {
     await prisma.mailingListSignup.upsert({

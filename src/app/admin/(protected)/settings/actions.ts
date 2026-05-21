@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
 type SocialLink = { icon: string; url: string; order: number };
 type BrandSettings = { primaryColor: string; accentColor: string; inkColor: string; headingFont: string; bodyFont: string };
@@ -13,6 +14,9 @@ export async function saveSettings(data: {
   footerText: string;
   socials: SocialLink[];
 }) {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+
   await prisma.siteSettings.upsert({
     where: { id: "settings" },
     create: { id: "settings", title: data.title, contactEmail: data.contactEmail, contactPhone: data.contactPhone || null, footerText: data.footerText || null, socials: { create: data.socials.map((s) => ({ icon: s.icon, url: s.url, order: s.order })) } },
@@ -26,6 +30,9 @@ export async function saveSettings(data: {
 }
 
 export async function saveBrandSettings(brand: BrandSettings) {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+
   await prisma.siteSettings.upsert({
     where: { id: "settings" },
     create: { id: "settings", title: "Tenacity Business Growth Consultancy", contactEmail: "becky@tenacity.co.uk", brandSettings: brand },

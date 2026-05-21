@@ -71,6 +71,7 @@ export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [globalError, setGlobalError] = useState<string>("");
+  const [formLoadedAt] = useState(() => Date.now());
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -236,6 +237,7 @@ export function ContactForm() {
           Website
           <input type="text" name="website" tabIndex={-1} autoComplete="off" />
         </label>
+        <input type="hidden" name="formLoadedAt" value={formLoadedAt} />
       </div>
 
       {globalError ? (

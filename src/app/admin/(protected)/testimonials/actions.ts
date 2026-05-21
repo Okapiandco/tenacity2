@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
 export async function saveTestimonial(data: {
   id?: string;
@@ -11,6 +12,9 @@ export async function saveTestimonial(data: {
   company?: string;
   featured: boolean;
 }) {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+
   if (data.id) {
     await prisma.testimonial.update({
       where: { id: data.id },
@@ -26,6 +30,9 @@ export async function saveTestimonial(data: {
 }
 
 export async function deleteTestimonial(id: string) {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+
   await prisma.testimonial.delete({ where: { id } });
   revalidatePath("/");
 }

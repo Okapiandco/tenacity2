@@ -15,7 +15,8 @@ export const contactSchema = z.object({
   company: z.string().max(120).optional().or(z.literal("")),
   message: z.string().min(10, "Please add a few details about your enquiry").max(4000),
   hearAbout: z.string().max(120).optional().or(z.literal("")),
-  website: z.string().max(0).optional().or(z.literal("")),
+  website: z.string().optional().or(z.literal("")),
+  formLoadedAt: z.coerce.number().optional(),
 });
 
 export type ContactPayload = z.infer<typeof contactSchema>;

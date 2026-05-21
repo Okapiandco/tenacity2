@@ -46,14 +46,7 @@ function resolveRecipient(): string {
 }
 
 function clientIp(request: NextRequest): string {
-  const fwd = request.headers.get("x-forwarded-for");
-  if (fwd) {
-    // If behind a proxy, take the last IP rather than the user-controllable first one if x-forwarded-for is present.
-    // However, in standard reverse proxies x-forwarded-for is appended. To avoid IP spoofing, we default to fallback.
-    const parts = fwd.split(",");
-    return parts[parts.length - 1]!.trim();
-  }
-  return request.headers.get("x-real-ip") ?? "unknown";
+  return (request as any).ip ?? request.headers.get("x-real-ip") ?? "unknown";
 }
 
 export async function POST(request: NextRequest) {
@@ -83,74 +76,72 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Honeypot: silently accept but do not send
+  // Honeypot: silently accept but do not send or save
   if (result.data.website) {
     return NextResponse.json({ ok: true });
   }
 
-  const recipient = resolveRecipient();
-  if (!recipient) {
-    console.error("Contact form: no recipient configured");
-    return NextResponse.json(
-      { ok: false, error: "Email delivery is not configured yet." },
-      { status: 500 },
-    );
+  const { name, email, phone, company, message, hearAbout, formLoadedAt } = result.data;
+
+  // Time-to-submit honeypot check: silently accept if completed too quickly (e.g. under 3 seconds)
+  if (formLoadedAt && Date.now() - formLoadedAt < 3000) {
+    console.warn("Contact form submitted too quickly (under 3 seconds). Silently accepting.");
+    return NextResponse.json({ ok: true });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.error("Contact form: RESEND_API_KEY missing");
-    return NextResponse.json(
-      { ok: false, error: "Email delivery is not configured yet." },
-      { status: 500 },
-    );
-  }
-
-  const resend = new Resend(apiKey);
-  const { name, email, phone, company, message, hearAbout } = result.data;
-  const fromEmail =
-    process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-
-  const lines = [
-    `Name: ${name}`,
-    `Email: ${email}`,
-    phone ? `Phone: ${phone}` : null,
-    company ? `Company: ${company}` : null,
-    hearAbout ? `Heard about us via: ${hearAbout}` : null,
-    "",
-    "Message:",
-    message,
-  ].filter(Boolean);
-
-  try {
-    const { error } = await resend.emails.send({
-      from: `Tenacity Website <${fromEmail}>`,
-      to: [recipient],
-      replyTo: email,
-      subject: `New enquiry from ${name}`,
-      text: lines.join("\n"),
-    });
-    if (error) {
-      console.error("Resend send error:", error);
-      return NextResponse.json(
-        { ok: false, error: "Could not send your message. Please try again later." },
-        { status: 502 },
-      );
-    }
-  } catch (err) {
-    console.error("Resend exception:", err);
-    return NextResponse.json(
-      { ok: false, error: "Could not send your message. Please try again later." },
-      { status: 500 },
-    );
-  }
-
+  // 1. Save to the database first
   try {
     await prisma.contactSubmission.create({
       data: { name, email, phone: phone ?? null, company: company ?? null, message, hearAbout: hearAbout ?? null },
     });
   } catch (err) {
     console.error("Failed to save contact submission:", err);
+    return NextResponse.json(
+      { ok: false, error: "Could not save your enquiry. Please try again later." },
+      { status: 500 },
+    );
+  }
+
+  // 2. Trigger Email notification
+  const recipient = resolveRecipient();
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (recipient && apiKey) {
+    const resend = new Resend(apiKey);
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+
+    const lines = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      phone ? `Phone: ${phone}` : null,
+      company ? `Company: ${company}` : null,
+      hearAbout ? `Heard about us via: ${hearAbout}` : null,
+      "",
+      "Message:",
+      message,
+    ].filter(Boolean);
+
+    try {
+      const { error } = await resend.emails.send({
+        from: `Tenacity Website <${fromEmail}>`,
+        to: [recipient],
+        replyTo: email,
+        subject: `New enquiry from ${name}`,
+        text: lines.join("\n"),
+      });
+      if (error) {
+        console.error("Resend send error:", error);
+      }
+    } catch (err) {
+      console.error("Resend exception:", err);
+    }
+  } else {
+    if (!recipient) {
+      console.warn("Contact form: no recipient configured (CONTACT_TO_EMAIL). Skip sending email.");
+    }
+    if (!apiKey) {
+      console.warn("Contact form: RESEND_API_KEY missing. Skip sending email.");
+    }
   }
 
   return NextResponse.json({ ok: true });
