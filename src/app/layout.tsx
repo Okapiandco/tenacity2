@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat, Inter, Playfair_Display, Lato } from "next/font/google";
+import Script from "next/script";
 import { JsonLd } from "@/components/seo/StructuredData";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/siteUrl";
@@ -79,6 +80,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-dvh bg-white text-muted">
         {children}
         <JsonLd data={organizationLd} />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-NQHE02JYK4" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-NQHE02JYK4');
+        `}</Script>
       </body>
     </html>
   );
