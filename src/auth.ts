@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import ResendProvider from "next-auth/providers/resend";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
@@ -7,6 +8,11 @@ import { prisma } from "@/lib/prisma";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
+    ResendProvider({
+      apiKey: process.env.RESEND_API_KEY,
+      from: process.env.RESEND_FROM_EMAIL ?? "hello@tenacity.co.uk",
+      name: "Email",
+    }),
     Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
@@ -31,17 +37,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: { strategy: "database" },
   pages: {
     signIn: "/admin/login",
+    verifyRequest: "/admin/login?verify=1",
   },
   callbacks: {
-    jwt({ token, user }) {
-      if (user) token.id = user.id;
-      return token;
-    },
-    session({ session, token }) {
-      if (session.user) session.user.id = token.id as string;
+    session({ session, user }) {
+      if (session.user) session.user.id = user.id;
       return session;
     },
   },
