@@ -170,18 +170,6 @@ export function Hero({
         </div>
       </Container>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, ease, delay: 1.6 }}
-        className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2"
-      >
-        <div className="flex flex-col items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/70">
-          <span>Scroll</span>
-          <span className="scroll-hint relative block h-10 w-px overflow-hidden bg-white/20" />
-        </div>
-      </motion.div>
-
       <div
         className="pointer-events-none absolute right-6 top-1/2 hidden -translate-y-1/2 lg:block"
         aria-hidden="true"

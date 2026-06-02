@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieBanner } from "@/components/layout/CookieBanner";
+import { ScrollToTop } from "@/components/ui/ScrollToTop";
 
 export default function SiteLayout({
   children,
@@ -16,6 +17,7 @@ export default function SiteLayout({
       <main id="content">{children}</main>
       <Footer />
       <CookieBanner />
+      <ScrollToTop />
     </>
   );
 }
