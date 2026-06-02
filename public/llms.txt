@@ -1,0 +1,21 @@
+# Tenacity Business Growth Consultancy
+
+> Business growth consultancy supporting UK small business owners and leaders with coaching, consultancy, project management and facilitation. Founded by Becky Phillips, based in the UK.
+
+## Key Pages
+
+- [Home](https://www.tenacity.business/): Overview of Tenacity and its services
+- [About](https://www.tenacity.business/about): About Becky Phillips and the Tenacity story
+- [Services](https://www.tenacity.business/services): Full list of support and solutions
+- [Coaching](https://www.tenacity.business/services/coaching): One-to-one coaching to build clarity and confidence
+- [Consultancy](https://www.tenacity.business/services/consultancy): Expert business guidance for growth
+- [Project Management](https://www.tenacity.business/services/project-management): Practical project delivery support
+- [Facilitation](https://www.tenacity.business/services/facilitation): Workshops, team days and strategic planning
+- [Pricing](https://www.tenacity.business/pricing): Pricing and packages
+- [Contact](https://www.tenacity.business/contact): Get in touch or book a discovery call
+- [Privacy Policy](https://www.tenacity.business/privacy): Privacy and cookie policy
+
+## Contact
+
+- Email: becky@tenacity.co.uk
+- Website: https://www.tenacity.business/

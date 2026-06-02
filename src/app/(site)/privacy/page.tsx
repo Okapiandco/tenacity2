@@ -149,9 +149,9 @@ export default function PrivacyPage() {
                 6. How long we keep your data
               </h2>
               <p>
-                Contact form enquiries are retained only as long as necessary to
-                respond to your message. We do not store form submissions in a
-                database — they are delivered by email and handled in our inbox.
+                Contact form enquiries are stored securely and retained only as
+                long as necessary to respond to your message. You may request
+                deletion at any time by emailing us.
               </p>
             </section>
 

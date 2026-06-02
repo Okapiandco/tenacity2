@@ -4,7 +4,6 @@ import { SITE_URL } from "@/lib/siteUrl";
 const SERVICE_SLUGS = [
   "coaching",
   "consultancy",
-  "leadership-development",
   "project-management",
   "facilitation",
 ];
