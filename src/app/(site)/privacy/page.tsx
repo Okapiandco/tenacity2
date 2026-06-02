@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const LAST_UPDATED = "May 2025";
 const CONTACT_EMAIL = "becky@tenacity.co.uk";
 const SITE_NAME = "Tenacity Business Growth Consultancy";
-const SITE_URL = "https://tenacity.co.uk";
+const SITE_URL = "https://www.tenacity.business";
 
 export default function PrivacyPage() {
   return (

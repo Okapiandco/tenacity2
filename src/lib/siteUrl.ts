@@ -1,4 +1,4 @@
-const FALLBACK = "https://tenacity.co.uk";
+const FALLBACK = "https://www.tenacity.business";
 
 function validate(raw: string | undefined): string {
   if (!raw) return FALLBACK;
