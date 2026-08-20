@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Montserrat, Inter, Playfair_Display, Lato } from "next/font/google";
-import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import { JsonLd } from "@/components/seo/StructuredData";
+import { CookieConsent } from "@/components/CookieConsent";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/siteUrl";
 import "./globals.css";
@@ -20,13 +21,14 @@ export const FONT_OPTIONS = [
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: "Tenacity Business Growth Consultancy", template: "%s, Tenacity Business Growth Consultancy" },
+  title: { default: "Tenacity | Business Growth Consultancy", template: "%s | Tenacity" },
   description: "Business growth consultancy supporting small business owners and leaders with coaching, consultancy, leadership development, project management and facilitation.",
   openGraph: {
     type: "website",
     siteName: "Tenacity Business Growth Consultancy",
     locale: "en_GB",
     url: SITE_URL,
+    title: "Tenacity | Business Growth Consultancy",
     images: [{ url: `${SITE_URL}/og-default.jpg`, width: 1200, height: 630, alt: "Tenacity Business Growth Consultancy" }],
   },
   twitter: { card: "summary_large_image" },
@@ -89,13 +91,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-dvh bg-white text-muted">
         {children}
         <JsonLd data={organizationLd} />
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-NQHE02JYK4" strategy="afterInteractive" />
-        <Script id="gtag-init" strategy="afterInteractive">{`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-NQHE02JYK4');
-        `}</Script>
+        <CookieConsent />
+        <Analytics />
       </body>
     </html>
   );
