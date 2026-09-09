@@ -1,0 +1,25 @@
+# Weekly grouped dependency updates.
+# One PR every Monday for all minor + patch updates (security included);
+# majors come as separate PRs to review. Kills the per-CVE alert spam.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+    groups:
+      # Everything non-major in a single PR.
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
